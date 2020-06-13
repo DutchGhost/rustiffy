@@ -11,8 +11,14 @@ pub fn build(b: *Builder) !void {
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
 
-    // Build the rust library, always    
-    const rustbuild = b.addSystemCommand(&[_][]const u8{"cargo", "build", "--release", "--manifest-path", "rust/Cargo.toml"});
+    // Build the rust library, always
+    const rustbuild = b.addSystemCommand(&[_][]const u8{
+        "cargo",
+        "build",
+        "--release",
+        "--manifest-path",
+        "rust/Cargo.toml",
+    });
     try rustbuild.step.make();
 
     const exe = b.addExecutable("rustiffy", "src/main.zig");
@@ -22,7 +28,7 @@ pub fn build(b: *Builder) !void {
     // Link to the rust library.
     exe.addLibPath("./rust/target/release");
     exe.linkSystemLibrary("rust");
-    
+
     exe.install();
 
     const run_cmd = exe.run();
